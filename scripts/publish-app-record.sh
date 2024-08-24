@@ -17,6 +17,8 @@ rcd_homepage=$(jq -r '.homepage' package.json | sed 's/null//')
 rcd_license=$(jq -r '.license' package.json | sed 's/null//')
 rcd_author=$(jq -r '.author' package.json | sed 's/null//')
 rcd_app_version=$(jq -r '.version' package.json | sed 's/null//')
+CERC_REGISTRY_DEPLOYMENT_PAYMENT_TO=${CERC_REGISTRY_DEPLOYMENT_PAYMENT_TO:-"laconic19h70dln5ktxpc8mcam5nm22glr7h9qtlzvvrtq"}
+CERC_REGISTRY_DEPLOYMENT_PAYMENT_AMOUNT=${CERC_REGISTRY_DEPLOYMENT_PAYMENT_AMOUNT:-10000}
 
 cat <<EOF > "$CONFIG_FILE"
 services:
@@ -66,7 +68,7 @@ if [ -z "$CERC_REGISTRY_APP_CRN" ]; then
   app=$(echo "$rcd_name" | cut -d'/' -f2-)
   CERC_REGISTRY_APP_CRN="lrn://$authority/applications/$app"
  #laconic -c $CONFIG_FILE registry authority reserve ${authority} --user-key "${CERC_REGISTRY_USER_KEY}"
-  laconic -c $CONFIG_FILE registry authority bond set ${authority} ${CERC_REGISTRY_BOND_ID} --user-key "${CERC_REGISTRY_USER_KEY}"
+ #laconic -c $CONFIG_FILE registry authority bond set ${authority} ${CERC_REGISTRY_BOND_ID} --user-key "${CERC_REGISTRY_USER_KEY}"
 fi
 
 laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} "$CERC_REGISTRY_APP_CRN@${rcd_app_version}" "$AR_RECORD_ID"
@@ -90,6 +92,8 @@ record:
   application: "$CERC_REGISTRY_APP_CRN@$rcd_app_version"
   dns: "$CERC_REGISTRY_DEPLOYMENT_SHORT_HOSTNAME"
   deployment: "$CERC_REGISTRY_DEPLOYMENT_CRN"
+  to: $CERC_REGISTRY_DEPLOYMENT_PAYMENT_TO
+  payment: $PAYMENT_TX
   config:
     env:
       CERC_WEBAPP_DEBUG: "$rcd_app_version"
