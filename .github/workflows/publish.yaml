@@ -33,5 +33,17 @@ jobs:
           laconic --version
       - name: "Install jq"
         uses: dcarbone/install-jq-action@v2.1.0
+     
       - name: "Publish App Record"
-        run: scripts/publish-app-record.sh
+        run: |
+          max_attempts=3
+          attempt=0
+          until [ $attempt -ge $max_attempts ]
+          do
+            echo "Attempt $((attempt+1)) to publish app record..."
+            scripts/publish-app-record.sh && break
+            attempt=$((attempt+1))
+            echo "Publish app record failed. Retrying in 10 seconds..."
+            sleep 10
+          done
+        shell: bash
