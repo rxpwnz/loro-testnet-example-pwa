@@ -1,7 +1,7 @@
 {
   "private": true,
-  "name": "@rxpwnz/pwa-test-app-223",
-  "version": "0.0.113",
+  "name": "@rxpwnz/pwa-test-app-225",
+  "version": "0.0.114",
   "repository": "https://github.com/rxpwnz/loro-testnet-example-pwa",
   "scripts": {
     "dev": "next dev",
