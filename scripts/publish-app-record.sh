@@ -30,13 +30,13 @@ services:
     fees: 150000000alnt
 EOF
 
-if [ -z "$CERC_REGISTRY_BOND_ID" ]; then
+if [ -z "$COSMOS_BOND_ID" ]; then
   bond_id=$(laconic -c $CONFIG_FILE registry bond create --type alnt --quantity 10000000000 --user-key "${CERC_REGISTRY_USER_KEY}")
 
-  CERC_REGISTRY_BOND_ID=$(echo ${bond_id} | jq -r .bondId)
+  COSMOS_BOND_ID=$(echo ${bond_id} | jq -r .bondId)
 fi
 
-next_ver=$(laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "$rcd_name" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$CERC_REGISTRY_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
+next_ver=$(laconic -c $CONFIG_FILE registry record list --type ApplicationRecord --all --name "$rcd_name" 2>/dev/null | jq -r -s ".[] | sort_by(.createTime) | reverse | [ .[] | select(.bondId == \"$COSMOS_BOND_ID\") ] | .[0].attributes.version" | awk -F. -v OFS=. '{$NF += 1 ; print}')
 
 if [ -z "$next_ver" ] || [ "1" == "$next_ver" ]; then
   next_ver=0.0.1
@@ -60,7 +60,7 @@ EOF
 
 
 cat $AR_RECORD_FILE
-AR_RECORD_ID=$(laconic -c $CONFIG_FILE registry record publish --filename $AR_RECORD_FILE --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} | jq -r '.id')
+AR_RECORD_ID=$(laconic -c $CONFIG_FILE registry record publish --filename $AR_RECORD_FILE --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${COSMOS_BOND_ID} | jq -r '.id')
 echo $AR_RECORD_ID
 
 if [ -z "$CERC_REGISTRY_APP_CRN" ]; then
@@ -69,13 +69,13 @@ if [ -z "$CERC_REGISTRY_APP_CRN" ]; then
   CERC_REGISTRY_APP_CRN="lrn://$authority/applications/$app"
  
  #laconic -c $CONFIG_FILE registry authority reserve ${authority} --user-key "${CERC_REGISTRY_USER_KEY}"
- #laconic -c $CONFIG_FILE registry authority bond set ${authority} ${CERC_REGISTRY_BOND_ID} --user-key "${CERC_REGISTRY_USER_KEY}"
+ #laconic -c $CONFIG_FILE registry authority bond set ${authority} ${COSMOS_BOND_ID} --user-key "${CERC_REGISTRY_USER_KEY}"
 fi
 
-laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} "$CERC_REGISTRY_APP_CRN@${rcd_app_version}" "$AR_RECORD_ID"
-laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} "$CERC_REGISTRY_APP_CRN@${CERC_REPO_REF}" "$AR_RECORD_ID"
+laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${COSMOS_BOND_ID} "$CERC_REGISTRY_APP_CRN@${rcd_app_version}" "$AR_RECORD_ID"
+laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${COSMOS_BOND_ID} "$CERC_REGISTRY_APP_CRN@${CERC_REPO_REF}" "$AR_RECORD_ID"
 if [ "true" == "$CERC_IS_LATEST_RELEASE" ]; then
-  laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} "$CERC_REGISTRY_APP_CRN" "$AR_RECORD_ID"
+  laconic -c $CONFIG_FILE registry name set --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${COSMOS_BOND_ID} "$CERC_REGISTRY_APP_CRN" "$AR_RECORD_ID"
 fi
 
 
@@ -105,7 +105,7 @@ record:
 EOF
 
 cat $ADR_RECORD_FILE
-ADR_RECORD_ID=$(laconic -c $CONFIG_FILE registry record publish --filename $ADR_RECORD_FILE --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${CERC_REGISTRY_BOND_ID} | jq -r '.id')
+ADR_RECORD_ID=$(laconic -c $CONFIG_FILE registry record publish --filename $ADR_RECORD_FILE --user-key "${CERC_REGISTRY_USER_KEY}" --bond-id ${COSMOS_BOND_ID} | jq -r '.id')
 echo $ADR_RECORD_ID
 
 rm -f $AR_RECORD_FILE $ADR_RECORD_FILE $CONFIG_FILE
