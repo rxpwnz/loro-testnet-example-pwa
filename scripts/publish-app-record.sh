@@ -23,8 +23,8 @@ CERC_REGISTRY_DEPLOYMENT_PAYMENT_AMOUNT=${CERC_REGISTRY_DEPLOYMENT_PAYMENT_AMOUN
 cat <<EOF > "$CONFIG_FILE"
 services:
   registry:
-    rpcEndpoint: '${CERC_REGISTRY_REST_ENDPOINT:-https://laconicd.laconic.com}'
-    gqlEndpoint: '${CERC_REGISTRY_GQL_ENDPOINT:-https://laconicd.laconic.com/api}'
+    rpcEndpoint: '${CERC_REGISTRY_REST_ENDPOINT:-https://laconicd-sapo.laconic.com}'
+    gqlEndpoint: '${CERC_REGISTRY_GQL_ENDPOINT:-https://laconicd-sapo.laconic.com/api}'
     chainId: ${CERC_REGISTRY_CHAIN_ID:-laconic-testnet-2}
     gas: 9550000
     fees: 150000000alnt
