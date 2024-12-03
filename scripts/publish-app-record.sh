@@ -25,7 +25,7 @@ services:
   registry:
     rpcEndpoint: '${CERC_REGISTRY_REST_ENDPOINT:-https://laconicd.laconic.com}'
     gqlEndpoint: '${CERC_REGISTRY_GQL_ENDPOINT:-https://laconicd.laconic.com/api}'
-    chainId: ${CERC_REGISTRY_CHAIN_ID:-laconic_9000-1}
+    chainId: ${CERC_REGISTRY_CHAIN_ID:-laconic-testnet-2}
     gas: 9550000
     fees: 150000000alnt
 EOF
